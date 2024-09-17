@@ -5,8 +5,7 @@ import { TbPlayerSkipForward } from 'react-icons/tb';
 import { GoUnmute } from 'react-icons/go';
 import { GoMute } from 'react-icons/go';
 import { useEffect, useRef, useState } from 'react';
-import music1 from '/src/assets/audio/music1.mp3';
-import music2 from '/src/assets/audio/music2.mp3';
+import { musicList } from './data/musicList';
 
 const AudioPlayer = () => {
     const audio = useRef<HTMLAudioElement | null>(null);
@@ -17,39 +16,40 @@ const AudioPlayer = () => {
     const [duration, setDuration] = useState('00:00');
     const [currentTime, setCurrentTime] = useState('00:00');
     const [progress, setProgress] = useState(0);
-    // const [fileName, setFileName] = useState('');
+    const [currentTrack, setCurrentTrack] = useState(0);
 
-    const musicList = [
-        {
-            icon: 'https://ncsmusic.s3.eu-west-1.amazonaws.com/tracks/000/000/430/1000x0/stronger-1586953156-2UtNfuxfSu.jpg',
-            track: music2,
-            name: 'Stronger',
-            author: 'Prismo',
-        },
-        {
-            icon: 'https://i.scdn.co/image/ab67616d0000b273ed50c8fe9503fd8d73d82f9f',
-            track: music1,
-            name: 'Snowfall',
-            author: 'Øneheart',
-        },
-    ];
+    const onNext = () => {
+        setCurrentTrack((prevTrack) => (prevTrack + 1) % musicList.length);
+    };
 
-    const onNext = () => {};
+    const onPrev = () => {
+        setCurrentTrack(
+            (prevTrack) => (prevTrack - 1 + musicList.length) % musicList.length
+        );
+        console.log(musicList[currentTrack].track);
+    };
 
     useEffect(() => {
-        audio.current = new Audio(musicList[0].track);
-        audio.current.loop = true;
+        if (audio.current) {
+            audio.current.pause();
+        }
+
+        audio.current = new Audio(musicList[currentTrack].track);
+
+        audio.current.addEventListener('ended', onNext);
+
         audio.current.addEventListener('loadedmetadata', () => {
             setDuration(formatTime(audio.current?.duration || 0));
             setCurrentTime(formatTime(audio.current?.currentTime || 0));
+
             if (progressBar.current) {
-                progressBar.current.max = `${audio.current.duration}`;
+                progressBar.current.max = `${audio.current?.duration}`;
             }
         });
 
         audio.current.addEventListener('timeupdate', () => {
             const current = audio.current?.currentTime || 0;
-            setCurrentTime(formatTime(audio.current?.currentTime || 0));
+            setCurrentTime(formatTime(current));
             setProgress(current);
 
             if (progressBar.current) {
@@ -57,11 +57,17 @@ const AudioPlayer = () => {
             }
         });
 
+        if (isPlaying) {
+            audio.current.play();
+        }
+
         return () => {
-            audio.current?.removeEventListener('loadedmetadata', () => {});
-            audio.current?.removeEventListener('timeupdate', () => {});
+            if (audio.current) {
+                audio.current.removeEventListener('loadedmetadata', () => {});
+                audio.current.removeEventListener('timeupdate', () => {});
+            }
         };
-    }, [audio]);
+    }, [currentTrack]);
 
     const handlePlaySound = () => {
         setIsPlaying(!isPlaying);
@@ -115,18 +121,18 @@ const AudioPlayer = () => {
             <div className='border-[1px] rounded-lg  w-[600px] h-[720px] flex flex-col gap-6 items-center '>
                 <div className='mt-10'>
                     <img
-                        // src='https://i.scdn.co/image/ab67616d0000b273ed50c8fe9503fd8d73d82f9f'
-                        src={musicList[0].icon}
+                        src={musicList[currentTrack].icon}
                         alt=''
                         className='rounded-xl w-[400px] '
                     />
                 </div>
                 <div>
-                    <h1 className='text-4xl'>{musicList[0].name}</h1>
+                    <h1 className='text-4xl'>{musicList[currentTrack].name}</h1>
                     <h2 className='text-2xl text-center text-gray-400'>
-                        {musicList[0].author}
+                        {musicList[currentTrack].author}
                     </h2>
                 </div>
+
                 <div className='flex items-center justify-center gap-5 w-full'>
                     <span>{currentTime}</span>
                     <input
@@ -139,7 +145,7 @@ const AudioPlayer = () => {
                     <span>{duration}</span>
                 </div>
                 <div className='flex gap-20'>
-                    <button>
+                    <button onClick={onPrev}>
                         <TbPlayerTrackPrev size={30} />
                     </button>
                     <button onClick={handlePlaySound}>
@@ -156,7 +162,7 @@ const AudioPlayer = () => {
                 <div className='flex items-center gap-4 '>
                     <input
                         type='range'
-                        className=' w-[250px] progressVolume cursor-ew-resize'
+                        className=' w-[250px]  cursor-ew-resize'
                         onChange={(e) => handleVolumeChange(e)}
                         value={volume * 100}
                     />
