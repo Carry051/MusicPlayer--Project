@@ -5,3 +5,23 @@
 body {
     background: black;
 }
+
+.volumeButton {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 250px;
+    cursor: ew-resize;
+    outline: none;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.volumeButton::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 15px;
+    background-color: #ffffff;
+    width: 0.1px;
+    border-radius: 50%;
+    box-shadow: -410px 0 0 410px #3b82f6;
+}
