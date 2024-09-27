@@ -25,12 +25,14 @@ const AudioPlayer = () => {
 
     return (
         <div className=' flex justify-center h-screen items-center text-white '>
-            <div className='border-[1px] rounded-lg  w-[600px] h-[720px] flex flex-col gap-6 items-center '>
-                <div className='mt-10'>
+            <div
+                className={`border-[1px] rounded-lg  w-[600px] h-[720px] flex flex-col gap-6 items-center ${musicList[currentTrack].bgColor} `}
+            >
+                <div className='mt-10 '>
                     <img
                         src={musicList[currentTrack].icon}
                         alt=''
-                        className='rounded-xl w-[400px] '
+                        className='rounded-xl w-[400px] border-none'
                     />
                 </div>
                 <div>

@@ -18,7 +18,7 @@ const ProgressAudioBar: FC<ProgressAudioBarProps> = ({
         <div className='flex items-center justify-center gap-5 w-full'>
             <span>{currentTime}</span>
             <input
-                className='max-w-[100%] bg-gray-300 cursor-pointer'
+                className='max-w-[100%] bg-gray-300 cursor-pointer outline-none'
                 type='range'
                 onChange={handleProgressChange}
                 ref={progressBar}

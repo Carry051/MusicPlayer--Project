@@ -12,11 +12,11 @@ export const useAudioPlayer = () => {
     const [progress, setProgress] = useState(0);
     const [currentTrack, setCurrentTrack] = useState(0);
 
-    useEffect(() => {
+    // Функція для ініціалізації нового треку
+    const initAudio = () => {
         if (audio.current) {
             audio.current.pause();
         }
-
         audio.current = new Audio(musicList[currentTrack].track);
         audio.current.volume = volume;
         audio.current.addEventListener('ended', onNext);
@@ -39,29 +39,27 @@ export const useAudioPlayer = () => {
                 progressBar.current.value = `${current}`;
             }
         });
+    };
 
+    // Виклик при зміні треку
+    useEffect(() => {
+        initAudio();
         if (isPlaying) {
-            audio.current.play();
+            audio.current?.play();
         }
+    }, [currentTrack]);
 
-        return () => {
-            if (audio.current) {
-                audio.current.removeEventListener('loadedmetadata', () => {});
-                audio.current.removeEventListener('timeupdate', () => {});
-            }
-        };
-    }, [currentTrack, isPlaying]);
+    // Запуск/паузи відтворення
+    useEffect(() => {
+        if (isPlaying) {
+            audio.current?.play();
+        } else {
+            audio.current?.pause();
+        }
+    }, [isPlaying]);
 
     const handlePlaySound = () => {
-        setIsPlaying(!isPlaying);
-
-        if (audio.current !== null) {
-            if (isPlaying) {
-                audio.current.pause();
-            } else {
-                audio.current.play();
-            }
-        }
+        setIsPlaying((prev) => !prev);
     };
 
     const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {

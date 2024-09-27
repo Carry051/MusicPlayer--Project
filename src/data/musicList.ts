@@ -10,6 +10,7 @@ export const musicList = [
         track: music1,
         name: 'Snowfall',
         author: 'Øneheart',
+        bgColor: 'bg-gradient-to-b from-10% from-[#00597b] to-70% to-[#010b15]',
     },
     {
         id: 1,
@@ -17,6 +18,7 @@ export const musicList = [
         track: music2,
         name: 'Stronger',
         author: 'Prismo',
+        bgColor: 'bg-gradient-to-b from-40% from-[#f0f0f0] to-80% to-[#3088af]',
     },
     {
         id: 2,
@@ -24,6 +26,7 @@ export const musicList = [
         track: music3,
         name: 'Over the Rainbow',
         author: 'IZ',
+        bgColor: 'bg-gradient-to-b from-40% from-[#d18b2b] to-80% to-[#d72025]',
     },
     {
         id: 3,
@@ -31,5 +34,7 @@ export const musicList = [
         track: music4,
         name: 'Odium',
         author: 'Lxst Cxntury',
+        bgColor:
+            'bg-gradient-to-b from-20% from-[#523784] to-70% to-[#1a2521] ',
     },
 ];
